@@ -42,5 +42,12 @@
   "packageManager": "yarn@3.2.3",
   "engines": {
     "node": ">=18.18.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.4",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
   }
 }

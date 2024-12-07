@@ -1,5 +1,5 @@
 [profile.default]
-src = 'contracts'
+src = './packages/foundry/contracts'
 out = 'out'
 libs = ['lib']
 fs_permissions = [{ access = "read-write", path = "./"}]
