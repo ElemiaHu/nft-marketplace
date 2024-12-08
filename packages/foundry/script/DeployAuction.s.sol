@@ -10,7 +10,7 @@ contract DeployAuction is ScaffoldETHDeploy {
     Auction auction = new Auction(deployer);
     console.logString(
       string.concat(
-        "YourContract deployed at: ", vm.toString(address(auction))
+        "Auction contract deployed at: ", vm.toString(address(auction))
       )
     );
   }

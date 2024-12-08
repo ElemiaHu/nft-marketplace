@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { parseEther } from "viem";
 import { AddressInput, InputBase } from "~~/components/scaffold-eth";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
@@ -54,7 +55,7 @@ const Page = () => {
         />
         <InputBase name="reserveprice" placeholder="Reserve Price" value={reservePrice} onChange={setReservePrice} />
         <button
-          className="btn btn-primary"
+          className="btn btn-primary w-full"
           onClick={async () => {
             try {
               await writeYourContractAsync({
@@ -66,11 +67,11 @@ const Page = () => {
                   BigInt(startTime),
                   BigInt(bidPeriod),
                   BigInt(revealPeriod),
-                  BigInt(reservePrice),
+                  parseEther(reservePrice),
                 ],
               });
             } catch (e) {
-              console.error("Error setting greeting:", e);
+              console.error("Error creating auction:", e);
             }
           }}
         >

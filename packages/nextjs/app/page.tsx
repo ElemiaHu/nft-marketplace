@@ -4,8 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import type { NextPage } from "next";
 import { useAccount } from "wagmi";
-// import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Address } from "~~/components/scaffold-eth";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
@@ -68,7 +66,9 @@ const Home: NextPage = () => {
             <Link href={"/auction"} passHref className="w-1/2">
               <button className="btn btn-primary w-full">Start Auction</button>
             </Link>
-            <button className="btn btn-secondary w-1/2">All Auctions</button>
+            <Link href={"/auctions"} passHref className="w-1/2">
+              <button className="btn btn-primary w-full">All Auctions</button>
+            </Link>
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ contract DeployERC20 is ScaffoldETHDeploy {
     ERC20Token erc20Token = new ERC20Token("NEU Token", "NEU", 18, 1_000_000);
     console.logString(
       string.concat(
-        "YourContract deployed at: ", vm.toString(address(erc20Token))
+        "ERC20Token contract deployed at: ", vm.toString(address(erc20Token))
       )
     );
   }

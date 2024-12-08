@@ -9,6 +9,7 @@ const Page = () => {
   const [nftName, setNFTName] = useState<string>("");
   const [nftSymbol, setNFTSymbol] = useState<string>("");
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("NFTFactory");
+
   return (
     <div className="flex flex-col items-center space-y-6 p-6">
       <div className="self-start">

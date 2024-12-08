@@ -110,4 +110,14 @@ function test_createAuction() public {
     assertEq(bid.commitment, commitment);
     assertEq(bid.collateral, collateral);
   }
+
+  function testBlockTimestamp() public {
+    uint256 currentTimestamp = block.timestamp;
+    console.log("Current Block Timestamp:", currentTimestamp);
+
+    // Simulate time warp if needed
+    vm.warp(currentTimestamp + 100);
+    console.log("Warped Block Timestamp:", block.timestamp);
+  }
+
 }

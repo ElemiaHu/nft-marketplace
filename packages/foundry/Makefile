@@ -1,4 +1,8 @@
 .PHONY: build deploy generate-abis verify-keystore account chain compile deploy-verify flatten fork format lint test verify
+ifneq (,$(wildcard .env))
+  include .env
+  export $(shell sed 's/=.*//' .env)
+endif
 
 # setup wallet for anvil
 setup-anvil-wallet:
@@ -56,6 +60,10 @@ account-import:
 compile:
 	forge compile
 
+# Compile contracts
+clean:
+	forge clean
+
 # Deploy and verify
 deploy-verify:
 	@if [ "$(RPC_URL)" = "localhost" ]; then \
@@ -86,4 +94,47 @@ verify:
 	forge script script/VerifyAll.s.sol --ffi --rpc-url $(RPC_URL)
 
 build-and-verify: build verify
+
+# Check environment variables
+check-env:
+	@echo "ALCHEMY_API_KEY=$(ALCHEMY_API_KEY)"
+	@echo "ETHERSCAN_API_KEY=$(ETHERSCAN_API_KEY)"
+
+# Replace a pending transaction
+replace-pending:
+	@if [ -z "$(NETWORK)" ]; then \
+		NETWORK="sepolia"; \
+		echo "NETWORK not set, using default: $$NETWORK"; \
+	fi; \
+	if [ -z "$(RPC_URL)" ]; then \
+		RPC_URL=$$(grep "^$$NETWORK" foundry.toml | cut -d '=' -f2 | sed "s#\${ALCHEMY_API_KEY}#$(ALCHEMY_API_KEY)#g" | sed 's/"//g' | tr -d ' '); \
+		if [ -z "$$RPC_URL" ]; then \
+			echo "Error: No RPC URL found for network $$NETWORK in foundry.toml"; \
+			exit 1; \
+		fi; \
+		echo "Resolved RPC_URL: $$RPC_URL"; \
+	fi; \
+	if [ -z "$(NONCE)" ]; then \
+		echo "Error: NONCE is not set"; \
+		exit 1; \
+	fi; \
+	if [ -z "$(GAS_PRICE)" ]; then \
+		GAS_PRICE=5000000000; \
+		echo "GAS_PRICE not set, using default: $$GAS_PRICE"; \
+	fi; \
+	if [ -z "$(TO)" ]; then \
+		TO="0xD60cb194DB8333b6E29A6E58dFcc17eeF3D31250"; \
+		echo "TO address not set, using default: $$TO"; \
+	fi; \
+	if [ -z "$(PRIVATE_KEY)" ]; then \
+		echo "Error: PRIVATE_KEY is not set"; \
+		exit 1; \
+	fi; \
+	echo "Sending transaction with RPC_URL: $$RPC_URL"; \
+	cast send --rpc-url $$RPC_URL \
+		--nonce $$NONCE \
+		--gas-price $$GAS_PRICE \
+		--private-key $$PRIVATE_KEY \
+		$$TO \
+		--value 0
 

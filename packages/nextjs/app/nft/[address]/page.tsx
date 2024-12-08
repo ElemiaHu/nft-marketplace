@@ -7,7 +7,6 @@ import { useParams } from "next/navigation";
 import { PinataSDK } from "pinata-web3";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { AddressInput } from "~~/components/scaffold-eth";
-import { Address } from "~~/components/scaffold-eth";
 import { deployedNFTAbi } from "~~/contracts/deployedNFT";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
@@ -111,38 +110,56 @@ const Page = () => {
           </div>
         </div>
 
-        <div className="w-1/2">
+        <div className="w-full lg:w-1/2">
           <h3 className="text-xl font-bold mb-6">You Owned</h3>
 
           {/* NFTs */}
-          <div className="w-full lg:w-2/3 p-6 space-y-6">
+          <div className="w-full p-6 space-y-6">
             {/* <div className="space-y-6"> */}
             {nfts?.map((nft, index) => {
               const imageUrl = `https://blue-traditional-tick-499.mypinata.cloud/ipfs/${nft.ipfsString}`;
               return (
-                <div key={index} className="flex items-center space-x-4 p-4 bg-base-300 rounded-lg shadow-md">
-                  <Image src={imageUrl} alt={`NFT ${nft.tokenId}`} width={100} height={100} className="rounded-md" />
-                  <div className="flex flex-col">
-                    <div className="flex flex-row justify-start align-items">
-                      <div className="font-bold">Token ID:</div>
-                      <div>{nft.tokenId.toString()}</div>
-                    </div>
-                    <div className="flex flex-row justify-start items-center space-x-2">
-                      <div className="font-bold">IPFS URL:</div>
+                <div
+                  key={index}
+                  className="flex flex-col md:flex-row items-start md:items-center justify-between space-x-4 p-4 bg-base-300 rounded-lg shadow-md"
+                >
+                  <div className="flex flex-row items-center space-x-4">
+                    <Image src={imageUrl} alt={`NFT ${nft.tokenId}`} width={100} height={100} className="rounded-md" />
+                    <div className="flex flex-col">
+                      <div className="flex flex-row justify-start align-items">
+                        <div className="font-bold">Token ID:</div>
+                        <div>{nft.tokenId.toString()}</div>
+                      </div>
+                      <div className="flex flex-row justify-start items-center space-x-2">
+                        <div className="font-bold">IPFS URL:</div>
 
-                      {/* Truncated IPFS URL */}
-                      <div
-                        className="relative group max-w-sm cursor-pointer text-blue-700"
-                        title={nft.ipfsString} // Tooltip for full URL
-                      >
-                        {nft.ipfsString.slice(0, 6)}...{nft.ipfsString.slice(-6)}
-                        {/* Tooltip for full URL */}
-                        <div className="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs p-2 rounded shadow-lg z-10">
-                          {nft.ipfsString}
+                        {/* Truncated IPFS URL */}
+                        <div
+                          className="relative group max-w-sm cursor-pointer text-blue-700"
+                          title={nft.ipfsString} // Tooltip for full URL
+                        >
+                          {nft.ipfsString.slice(0, 6)}...{nft.ipfsString.slice(-6)}
+                          {/* Tooltip for full URL */}
+                          <div className="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs p-2 rounded shadow-lg z-10">
+                            {nft.ipfsString}
+                          </div>
                         </div>
                       </div>
                     </div>
+                    {/* Start Auction Button */}
                   </div>
+                  <Link
+                    href={{
+                      pathname: "/auction",
+                      query: {
+                        collection: params.address,
+                        tokenId: nft.tokenId.toString(),
+                      },
+                    }}
+                    passHref
+                  >
+                    <button className="btn btn-primary mt-4">Start Auction</button>
+                  </Link>
                 </div>
               );
             })}

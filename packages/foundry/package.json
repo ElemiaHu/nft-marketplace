@@ -7,6 +7,7 @@
     "account:generate": "make account-generate ACCOUNT_NAME=${1:-scaffold-eth-custom}",
     "account:import": "make account-import ACCOUNT_NAME=${1:-scaffold-eth-custom}",
     "chain": "make chain",
+    "clean": "make clean",
     "compile": "make compile",
     "deploy": "make build-and-deploy RPC_URL=${1:-localhost}",
     "deploy:verify": "make deploy-verify RPC_URL=${1:-localhost}",
@@ -17,7 +18,9 @@
     "lint": "make lint",
     "test": "make test",
     "verify": "make build-and-verify RPC_URL=${1:-localhost}",
-    "verify-keystore": "make verify-keystore"
+    "verify-keystore": "make verify-keystore",
+    "replace-pending": "make replace-pending",
+    "check-env": "make check-env"
   },
   "dependencies": {
     "dotenv": "~16.3.1",
