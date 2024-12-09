@@ -10,7 +10,7 @@ contract DeployNFTFactory is ScaffoldETHDeploy {
     NFTFactory nftFactory = new NFTFactory(deployer);
     console.logString(
         string.concat(
-            "YourContract deployed at: ", vm.toString(address(nftFactory))
+            "ERC721Token contract deployed at: ", vm.toString(address(nftFactory))
         )
     );
   }

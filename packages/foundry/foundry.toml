@@ -26,6 +26,7 @@ scrollSepolia = "https://sepolia-rpc.scroll.io"
 scroll = "https://rpc.scroll.io"
 pgn = "https://rpc.publicgoods.network"
 pgnTestnet = "https://sepolia.publicgoods.network"
+sepoliaFork = "https://virtual.sepolia.rpc.tenderly.co/c32d51e8-73f1-48cb-b3a7-8e2f9b0b4f3d"
 
 [etherscan]
 polygonMumbai = { key = "${ETHERSCAN_API_KEY}" }

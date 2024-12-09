@@ -5,9 +5,9 @@
 import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
-  31337: {
+  114514: {
     NFTFactory: {
-      address: "0x700b6a60ce7eaaea56f065753d8dcb9653dbad35",
+      address: "0xe630a8d9f293f9968e7fa7aaf88e7f22568841ee",
       abi: [
         {
           type: "constructor",

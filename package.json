@@ -12,6 +12,7 @@
     "account:generate": "yarn workspace @se-2/foundry account:generate",
     "account:import": "yarn workspace @se-2/foundry account:import",
     "chain": "yarn workspace @se-2/foundry chain",
+    "clean": "yarn workspace @se-2/foundry clean",
     "compile": "yarn workspace @se-2/foundry compile",
     "deploy": "yarn workspace @se-2/foundry deploy",
     "deploy:verify": "yarn workspace @se-2/foundry deploy:verify",
@@ -33,7 +34,9 @@
     "test": "yarn foundry:test",
     "vercel": "yarn workspace @se-2/nextjs vercel",
     "vercel:yolo": "yarn workspace @se-2/nextjs vercel:yolo",
-    "verify": "yarn workspace @se-2/foundry verify"
+    "verify": "yarn workspace @se-2/foundry verify",
+    "replace:pending": "yarn workspace @se-2/foundry replace-pending",
+    "check-env": "yarn workspace @se-2/foundry check-env"
   },
   "devDependencies": {
     "husky": "~8.0.3",
