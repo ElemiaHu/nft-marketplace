@@ -28,7 +28,7 @@ const Page = () => {
       <div className="w-full max-w-md bg-base-200 p-6 rounded-lg shadow-md space-y-4">
         <div className="text-2xl font-bold text-center">New Auction</div>
         <AddressInput name="nft" placeholder="NFT Collection Address" value={nft} onChange={setNFT} />
-        <InputBase value={tokenId} onChange={setTokenId} placeholder="Token ID" />
+        <InputBase name="tokenId" placeholder="Token ID" value={tokenId} onChange={setTokenId} />
         <AddressInput name="token" placeholder="ERC20 Token Address" value={token} onChange={setToken} />
         <div className="flex border-2 border-base-300 bg-base-200 rounded-full text-accent">
           <input
