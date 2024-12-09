@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { formatEther, parseEther } from "viem";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useReadContract } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { deployedNFTAbi } from "~~/contracts/deployedNFT";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
@@ -35,17 +35,17 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
     }
     console.log(`Placing bid of ${bidPrice} ETH for tokenId: ${auction.tokenId}`);
   };
-  const handleClick = () => {
-    if (isLoading) {
-      console.log("Loading metadata...");
-      return;
-    }
-    if (error) {
-      console.error("Failed to fetch metadata:", error);
-      return;
-    }
-    console.log("Token Metadata:", data);
-  };
+  // const handleClick = () => {
+  //   if (isLoading) {
+  //     console.log("Loading metadata...");
+  //     return;
+  //   }
+  //   if (error) {
+  //     console.error("Failed to fetch metadata:", error);
+  //     return;
+  //   }
+  //   console.log("Token Metadata:", data);
+  // };
   return (
     <div className="bg-white shadow-md rounded-lg p-4 max-w-md mx-auto">
       <div className="bg-gray-200 h-24 rounded-md mb-4 flex items-center justify-center">
