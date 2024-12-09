@@ -68,7 +68,7 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
           <strong>End of Bidding:</strong> {new Date(Number(auction.endOfBiddingPeriod) * 1000).toLocaleString()}
         </p>
         <p>
-          <strong>Highest Bid:</strong> {formatEther(auction.highestBid)} ETH
+          <strong>Highest Bid:</strong> {formatEther(auction.highestBid)} NEU token
         </p>
         <p>
           <strong>Highest Bidder:</strong> <Address address={auction.highestBidder} />

@@ -31,7 +31,7 @@ contract AuctionTest is Test {
   
   function setUp() public {
     auction = new Auction(deployer);
-    erc20Token = new ERC20Token("NEU Token", "NEU", 18, 1_000_000 ether);
+    erc20Token = new ERC20Token("NEU Token", "NEU", 18, 1_000_000 ether, deployer);
     erc721Token = new ERC721Token("Chiikwa", "CKW", deployer);
 
     auctionAddress = address(auction);
