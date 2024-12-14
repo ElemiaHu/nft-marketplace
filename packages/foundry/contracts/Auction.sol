@@ -19,8 +19,8 @@ contract Auction {
     uint256 endOfRevealPeriod;
     // =====================
     uint64 numUnrevealedBids;
-    uint96 highestBid;
-    uint96 secondHighestBid;
+    uint256 highestBid;
+    uint256 secondHighestBid;
     // =====================
     address highestBidder;
     uint64 index;
@@ -60,7 +60,7 @@ contract Auction {
     uint256 startTime,
     uint256 bidPeriod,
     uint256 revealPeriod,
-    uint96 reservePrice
+    uint256 reservePrice
   ) public virtual {
     // require(startTime > block.timestamp, "Auction must start in the future");
     require(auctions[tokenContract][tokenId].startTime == 0, "Auction already exists for this asset");
@@ -88,7 +88,7 @@ contract Auction {
     auctionArray.push(newAuction);
   }
 
-  function commitBid(address tokenContract, uint256 tokenId, bytes20 commitment, uint256 erc20Tokens) external {
+  function commitBid(address tokenContract, uint256 tokenId, bytes20 commitment, uint256 bidValue) external {
     // Retrieve the auction details
     Auction storage auction = auctions[tokenContract][tokenId];
 
@@ -103,16 +103,24 @@ contract Auction {
     require(commitment != bytes20(0), "Commitment cannot be empty");
 
     // Ensure the provided collateral is greater than or equal to the minimum required collateral
-    require(erc20Tokens > 0, "Insufficient collateral");
+    require(bidValue > 0, "Insufficient collateral");
 
     // Transfer the ERC20 tokens from the bidder to the auction contract address as collateral
-    IERC20(auction.erc20Token).transferFrom(msg.sender, address(this), erc20Tokens);
+    IERC20(auction.erc20Token).transferFrom(msg.sender, address(this), bidValue);
 
     // Store or update the bid in the bids mapping
     bids[tokenContract][tokenId][auction.index][msg.sender] = Bid({
       commitment: commitment,
-      collateral: uint96(erc20Tokens)
+      collateral: uint96(bidValue)
     });
+
+    if (bidValue > auction.highestBid) {
+      auction.secondHighestBid = auction.highestBid;
+      auction.highestBid = bidValue;
+      auction.highestBidder = msg.sender;
+    } else if (bidValue > auction.secondHighestBid) {
+      auction.secondHighestBid = bidValue;
+    }
 
     // Increase the count of unrevealed bids
     auction.numUnrevealedBids++;
@@ -142,13 +150,6 @@ contract Auction {
     
     // Update the auction state, reveal the second highest bid
     auction.numUnrevealedBids -= 1;
-    if (bidValue > auction.highestBid) {
-      auction.secondHighestBid = auction.highestBid;
-      auction.highestBid = bidValue;
-      auction.highestBidder = msg.sender;
-    } else if (bidValue > auction.secondHighestBid) {
-      auction.secondHighestBid = bidValue;
-    }
   }
 
   function endAuction(address tokenContract, uint256 tokenId) external {
@@ -161,7 +162,7 @@ contract Auction {
     // require(block.timestamp > auction.endOfRevealPeriod, "Revealing period is not over");
 
     // Ensure all bids are revealed
-    require(auction.numUnrevealedBids == 0, "Not all bids are revealed");
+    // require(auction.numUnrevealedBids == 0, "Not all bids are revealed");
 
     // Ensure secondHighestBid is not reservePrice
     if (auction.highestBidder != auction.seller) {
@@ -174,7 +175,7 @@ contract Auction {
 
       // Return extra collateral to the winning bidder
       Bid storage winningBid = bids[tokenContract][tokenId][auction.index][auction.highestBidder];
-      uint96 excessCollateral = winningBid.collateral - auction.secondHighestBid;
+      uint256 excessCollateral = winningBid.collateral - auction.secondHighestBid;
       if (excessCollateral > 0) {
         IERC20(auction.erc20Token).transfer(auction.highestBidder, excessCollateral);
       }

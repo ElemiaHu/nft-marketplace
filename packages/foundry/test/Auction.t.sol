@@ -98,15 +98,19 @@ function test_createAuction() public {
 
     // Retrieve the auction struct
     Auction.Auction memory createdAuction = auction.getAuction(erc721TokenAddress, tokenId);
+    console.log(createdAuction.highestBid);
     
     // Commit the bid with a collateral of 30
     vm.startPrank(alice);
-    uint96 aliceBid = 5;
-    uint96 collateral = 30 ether;
+    uint256 aliceBid = 5;
+    uint256 collateral = 30 ether;
     bytes20 commitment = bytes20(keccak256(abi.encode(nonce, aliceBid, erc721TokenAddress, tokenId, createdAuction.index)));
     erc20Token.approve(auctionAddress, collateral);
     auction.commitBid(erc721TokenAddress, tokenId, commitment, collateral);
     Auction.Bid memory bid =  auction.getBid(erc721TokenAddress, tokenId, createdAuction.index,alice);
+
+    createdAuction = auction.getAuction(erc721TokenAddress, tokenId);
+    console.log(createdAuction.highestBid);
     assertEq(bid.commitment, commitment);
     assertEq(bid.collateral, collateral);
   }

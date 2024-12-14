@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { AbiCoder, getAddress, keccak256, toUtf8Bytes, zeroPadBytes } from "ethers";
 import { formatEther, parseEther } from "viem";
-import { useAccount } from "wagmi";
 import { useReadContract } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
 import { deployedNFTAbi } from "~~/contracts/deployedNFT";
-import { useScaffoldContract, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Auction } from "~~/types/auction/auction";
 
 interface AuctionProps {
@@ -21,17 +20,11 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
   });
 
   const { writeContractAsync: writeAuction } = useScaffoldWriteContract("Auction");
-  const { writeContractAsync: writeERC20 } = useScaffoldWriteContract("ERC20Token");
-  const { data: auctionData } = useScaffoldContract({
-    contractName: "Auction",
-  });
-  const auctionAddress = auctionData?.address;
-  const { address, isConnected } = useAccount();
 
-  const { data: allowance } = useScaffoldReadContract({
-    contractName: "ERC20Token",
-    functionName: "allowance",
-    args: [address, auctionAddress],
+  const { data: auctionInfo } = useScaffoldReadContract({
+    contractName: "Auction",
+    functionName: "getAuction",
+    args: [auction.tokenContract, auction.tokenId],
   });
 
   const [bidPrice, setBidPrice] = useState("");
@@ -60,24 +53,13 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
     );
 
     const hash = keccak256(encodedData);
-    // 截取前 20 个字节作为 bytes20
-    const commitment = hash.slice(0, 42); // `0x` 加上 40 个字符（20 字节）
+
+    const commitment = hash.slice(0, 42);
 
     return commitment;
   }
 
   const handlePlaceBid = async () => {
-    if (!allowance) {
-      try {
-        await writeERC20({
-          functionName: "approve",
-          args: [auctionAddress, parseEther(bidPrice)],
-        });
-      } catch (e) {
-        console.error("Error setting greeting:", e);
-      }
-    }
-
     const commitment = generateCommitment(
       "fixed-nonce",
       Number(bidPrice),
@@ -97,24 +79,25 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
     console.log(`Placing bid of ${bidPrice} ETH for tokenId: ${auction.tokenId}`);
   };
 
-  const handleRevealBid = async () => {
-    const commitment = generateCommitment(
-      "fixed-nonce",
-      Number(bidPrice),
-      auction.tokenContract,
-      Number(auction.tokenId),
-      Number(auction.index),
-    );
+  // const handleRevealBid = async () => {
+  //   const commitment = generateCommitment(
+  //     "fixed-nonce",
+  //     Number(bidPrice),
+  //     auction.tokenContract,
+  //     Number(auction.tokenId),
+  //     Number(auction.index),
+  //   );
 
-    try {
-      await writeAuction({
-        functionName: "revealBid",
-        args: [auction.tokenContract, auction.tokenId, parseEther(bidPrice), commitment as `0x${string}`],
-      });
-    } catch (e) {
-      console.error("Error setting greeting:", e);
-    }
-  };
+  //   console.log(commitment);
+  //   try {
+  //     await writeAuction({
+  //       functionName: "revealBid",
+  //       args: [auction.tokenContract, auction.tokenId, parseEther(bidPrice), commitment as `0x${string}`],
+  //     });
+  //   } catch (e) {
+  //     console.error("Error setting greeting:", e);
+  //   }
+  // };
 
   // const handleClick = () => {
   //   if (isLoading) {
@@ -149,10 +132,10 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
           <strong>End of Bidding:</strong> {new Date(Number(auction.endOfBiddingPeriod) * 1000).toLocaleString()}
         </p>
         <p>
-          <strong>Highest Bid:</strong> {formatEther(auction.highestBid)} NEU token
+          <strong>Highest Bid:</strong> {auctionInfo ? formatEther(auctionInfo.highestBid) : ""} NEU token
         </p>
         <p>
-          <strong>Highest Bidder:</strong> <Address address={auction.highestBidder} />
+          <strong>Highest Bidder:</strong> <Address address={auctionInfo ? auctionInfo.highestBidder : ""} />
         </p>
         <p>
           <strong>Seller:</strong> <Address address={auction.seller} />
@@ -183,7 +166,7 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
         Place a Bid
       </button>
 
-      <button
+      {/* <button
         className={`mt-4 w-full py-2 rounded-md transition ${
           isRevealActive ? "bg-blue-500 text-white hover:bg-blue-600" : "bg-gray-400 text-gray-600 cursor-not-allowed"
         }`}
@@ -191,7 +174,7 @@ const AuctionCard: React.FC<AuctionProps> = ({ auction }) => {
         disabled={!isRevealActive}
       >
         Reveal Bid
-      </button>
+      </button> */}
     </div>
   );
 };

@@ -2,18 +2,18 @@ import { defineChain } from "viem";
 
 // Sepolia Fork
 export const sepoliaFork = defineChain({
-  id: 114515,
-  name: "Sepolia Fork V2",
+  id: 114516,
+  name: "Sepolia Fork V3",
   nativeCurrency: { name: "Ethereum", symbol: "ETH", decimals: 18 },
   rpcUrls: {
     default: {
-      http: ["https://virtual.sepolia.rpc.tenderly.co/6ad5d5e6-43c2-4d5b-a47b-79b2ef30a6de"],
+      http: ["https://virtual.sepolia.rpc.tenderly.co/9759a76d-5fa8-4d17-9130-391ab781059c"],
     },
   },
   blockExplorers: {
     default: {
       name: "Sepoliaforkscan",
-      url: "https://dashboard.tenderly.co/explorer/vnet/6ad5d5e6-43c2-4d5b-a47b-79b2ef30a6de",
+      url: "https://dashboard.tenderly.co/explorer/vnet/9759a76d-5fa8-4d17-9130-391ab781059c",
     },
   },
 });

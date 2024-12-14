@@ -12,7 +12,6 @@ const Page = () => {
   const [tokenId, setTokenId] = useState<string>("");
   const [startTime, setStartTime] = useState<string>("");
   const [bidPeriod, setBidPeriod] = useState<string>("");
-  const [revealPeriod, setRevealPeriod] = useState<string>("");
   const [reservePrice, setReservePrice] = useState<string>("");
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("Auction");
 
@@ -47,12 +46,6 @@ const Page = () => {
           value={bidPeriod}
           onChange={setBidPeriod}
         />
-        <InputBase
-          name="revealperiod"
-          placeholder="Auction Reveal Period Duration"
-          value={revealPeriod}
-          onChange={setRevealPeriod}
-        />
         <InputBase name="reserveprice" placeholder="Reserve Price" value={reservePrice} onChange={setReservePrice} />
         <button
           className="btn btn-primary w-full"
@@ -66,7 +59,7 @@ const Page = () => {
                   token,
                   BigInt(startTime),
                   BigInt(bidPeriod),
-                  BigInt(revealPeriod),
+                  BigInt("60"),
                   parseEther(reservePrice),
                 ],
               });

@@ -7,7 +7,7 @@ export interface Auction {
   endOfBiddingPeriod: bigint; // uint256 类型映射为 bigint
   endOfRevealPeriod: bigint; // uint256 类型映射为 bigint
   numUnrevealedBids: bigint; // uint64 类型映射为 bigint
-  highestBid: bigint; // uint96 类型映射为 bigint
+  highestBid: bigint; // uint256 类型映射为 bigint
   secondHighestBid: bigint; // uint96 类型映射为 bigint
   highestBidder: string; // address 类型映射为 string
   index: bigint; // uint64 类型映射为 bigint
