@@ -1072,7 +1072,7 @@ const deployedContracts = {
   },
   114515: {
     NFTFactory: {
-      address: "0x4b72CbdD4C25a8b8920c007C5a268fc3a6953D83",
+      address: "0x0365b4fd1679C4046Bc51254B0BA2AAdF0Fe1137",
       abi: [
         {
           type: "constructor",
@@ -1226,7 +1226,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     Auction: {
-      address: "0xE4bD71488C30570d4bc90fDcd1a513537bd17027",
+      address: "0x6eB76bC997D39114A5bD392a974883e0D4e2bdb4",
       abi: [
         {
           type: "constructor",
@@ -1767,7 +1767,7 @@ const deployedContracts = {
       inheritedFunctions: {},
     },
     ERC20Token: {
-      address: "0x81aE08f12209dd62A468D60a6a4736b2Db837bA3",
+      address: "0x349Cfa62A7b48dbA1AB0Ae2688eCB88B75FaC45e",
       abi: [
         {
           type: "constructor",

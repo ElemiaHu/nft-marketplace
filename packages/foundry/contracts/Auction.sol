@@ -62,7 +62,7 @@ contract Auction {
     uint256 revealPeriod,
     uint96 reservePrice
   ) public virtual {
-    require(startTime > block.timestamp, "Auction must start in the future");
+    // require(startTime > block.timestamp, "Auction must start in the future");
     require(auctions[tokenContract][tokenId].startTime == 0, "Auction already exists for this asset");
     require(bidPeriod > 0, "Bid period must be greater than 0");
     require(revealPeriod > 0, "Reveal period must be greater than 0");
@@ -96,8 +96,8 @@ contract Auction {
     require(auction.startTime > 0, "Auction does not exist for this item");
 
     // Ensure that the bidding period is still active
-    require(block.timestamp >= auction.startTime, "Bidding period has not started yet");
-    require(block.timestamp <= auction.endOfBiddingPeriod, "Bidding period has ended");
+    // require(block.timestamp >= auction.startTime, "Bidding period has not started yet");
+    // require(block.timestamp <= auction.endOfBiddingPeriod, "Bidding period has ended");
 
     // Ensure that the commitment is not empty
     require(commitment != bytes20(0), "Commitment cannot be empty");
@@ -118,24 +118,24 @@ contract Auction {
     auction.numUnrevealedBids++;
   }
 
-  function revealBid(address tokenContract, uint256 tokenId, uint96 bidValue, bytes32 nonce) external {
+  function revealBid(address tokenContract, uint256 tokenId, uint96 bidValue, bytes20 nonce) external {
     Auction storage auction = auctions[tokenContract][tokenId];
 
     // Ensure that the auction for the specified item exists
     require(auction.startTime > 0, "Auction does not exist for this item");
 
     // Ensure the bidding period has ended
-    require(block.timestamp >= auction.endOfBiddingPeriod, "Bidding period has not ended yet");
+    // require(block.timestamp >= auction.endOfBiddingPeriod, "Bidding period has not ended yet");
     
     // Ensure the revealing period has not ended
-    require(block.timestamp < auction.endOfRevealPeriod, "Reveal period has ended");
+    // require(block.timestamp < auction.endOfRevealPeriod, "Reveal period has ended");
 
     // Fetch the bid commitment
     Bid storage bid = bids[tokenContract][tokenId][auction.index][msg.sender];
     require(bid.commitment != bytes20(0), "No commitment found for this bidder");
 
     // Ensure that the revealed bid matches the commitment
-    require(bytes20(keccak256(abi.encode(nonce, bidValue, tokenContract, tokenId, auction.index))) == bid.commitment, "Invalid bid reveal");
+    require(nonce == bid.commitment, "Invalid bid reveal");
     
     // Ensure collateral is enough for bidding
     require(bidValue <= bid.collateral, "Not enough collateral");
@@ -158,7 +158,7 @@ contract Auction {
     require(auction.startTime > 0, "Auction does not exist for this item");
 
     // Ensure the bidding period is over
-    require(block.timestamp > auction.endOfRevealPeriod, "Revealing period is not over");
+    // require(block.timestamp > auction.endOfRevealPeriod, "Revealing period is not over");
 
     // Ensure all bids are revealed
     require(auction.numUnrevealedBids == 0, "Not all bids are revealed");
@@ -192,7 +192,7 @@ contract Auction {
     Bid storage bid = bids[tokenContract][tokenId][auctionIndex][msg.sender];
 
     // Ensure the revealing peiod has ended
-    require(block.timestamp > auction.endOfRevealPeriod, "Reveal period has not ended");
+    // require(block.timestamp > auction.endOfRevealPeriod, "Reveal period has not ended");
     
     // Ensure bidder has not withdrawn their collateral
     require(bid.commitment != bytes20(0), "No commitment found for this bidder");

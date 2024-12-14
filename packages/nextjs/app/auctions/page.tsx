@@ -24,10 +24,13 @@ const Page = () => {
   //   return;
   // };
   return (
-    <div className="flex flex-col items-center justify-center">
-      <Link href={"/"} passHref>
-        <button className="btn btn-primary">back</button>
-      </Link>
+    <div className="flex flex-col items-center justify-center p-6">
+      <div className="self-start">
+        {" "}
+        <Link href={"/"} passHref>
+          <button className="btn btn-neutral btn-outline">back</button>
+        </Link>
+      </div>
       <button
         className="btn btn-primary"
         onClick={async () => {
