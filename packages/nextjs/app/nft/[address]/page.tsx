@@ -5,20 +5,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PinataSDK } from "pinata-web3";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useReadContract, useWriteContract } from "wagmi";
 import { AddressInput } from "~~/components/scaffold-eth";
 import { deployedNFTAbi } from "~~/contracts/deployedNFT";
 import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 // Define the uploadImage function using the Pinata SDK
 async function uploadImage(file: File) {
-  // Initialize the PinataSDK instance
-  const pinata = new PinataSDK({
-    pinataJwt: process.env.NEXT_PUBLIC_PINATA_JWT!, // JWT token from environment variables
-    pinataGateway: process.env.NEXT_PUBLIC_PINATA_GATEWAY!, // Pinata gateway from environment variables
-  });
+  const pinataJwt = process.env.NEXT_PUBLIC_PINATA_JWT;
+  const pinataGateway = process.env.NEXT_PUBLIC_PINATA_GATEWAY;
+
+  if (!pinataJwt || !pinataGateway) {
+    throw new Error("Pinata JWT or Gateway is not defined in environment variables.");
+  }
+
+  const pinata = new PinataSDK({ pinataJwt, pinataGateway });
   try {
-    // Upload the file to Pinata
     const uploadResponse = await pinata.upload.file(file);
     return uploadResponse;
   } catch (error) {
@@ -32,8 +34,8 @@ const Page = () => {
   const collection = params.address as string;
   const [toAddress, setToAddress] = useState<string>("");
   const [ipfsUrl, setIpfsUrl] = useState<string>("");
+
   const { writeContractAsync } = useWriteContract();
-  const { address: connectedAddress } = useAccount();
   const { data: collectionInfo } = useScaffoldReadContract({
     contractName: "NFTFactory",
     functionName: "getCollectionInfo",
@@ -44,7 +46,7 @@ const Page = () => {
     abi: deployedNFTAbi,
     address: collection,
     functionName: "getOwnedNFTs",
-    args: [connectedAddress],
+    args: [],
   });
 
   const nfts = result.data as { tokenId: bigint; ipfsString: string }[];
@@ -62,9 +64,8 @@ const Page = () => {
   return (
     <div className="w-full">
       <div className="px-6 pt-4">
-        {" "}
         <Link href={"/"} passHref>
-          <button className="btn btn-neutral btn-outline">back</button>
+          <button className="btn btn-neutral btn-outline">Back</button>
         </Link>
       </div>
 
@@ -74,7 +75,7 @@ const Page = () => {
           <div className="space-y-2">
             <div className="text-xl font-bold">NFT Collection</div>
             <div className="font-bold">Address</div>
-            <div>{params.address}</div>
+            <div>{collection}</div>
             <div className="font-bold">NFT Name</div>
             <div>{collectionInfo?.[0]}</div>
             <div className="font-bold">NFT Symbol</div>
@@ -91,12 +92,14 @@ const Page = () => {
             <button
               className="btn btn-primary w-full"
               onClick={async () => {
-                writeContractAsync({
-                  abi: deployedNFTAbi,
-                  address: collection,
-                  functionName: "mint",
-                  args: [toAddress, ipfsUrl],
-                });
+                if (toAddress && ipfsUrl) {
+                  await writeContractAsync({
+                    abi: deployedNFTAbi,
+                    address: collection,
+                    functionName: "mint",
+                    args: [toAddress, ipfsUrl],
+                  });
+                }
               }}
             >
               Mint
@@ -115,7 +118,6 @@ const Page = () => {
 
           {/* NFTs */}
           <div className="w-full p-6 space-y-6">
-            {/* <div className="space-y-6"> */}
             {nfts?.map((nft, index) => {
               const imageUrl = `https://blue-traditional-tick-499.mypinata.cloud/ipfs/${nft.ipfsString}`;
               return (
@@ -126,33 +128,26 @@ const Page = () => {
                   <div className="flex flex-row items-center space-x-4">
                     <Image src={imageUrl} alt={`NFT ${nft.tokenId}`} width={100} height={100} className="rounded-md" />
                     <div className="flex flex-col">
-                      <div className="flex flex-row justify-start align-items">
+                      <div className="flex flex-row justify-start">
                         <div className="font-bold">Token ID:</div>
                         <div>{nft.tokenId.toString()}</div>
                       </div>
                       <div className="flex flex-row justify-start items-center space-x-2">
                         <div className="font-bold">IPFS URL:</div>
-
-                        {/* Truncated IPFS URL */}
                         <div
                           className="relative group max-w-sm cursor-pointer text-blue-700"
-                          title={nft.ipfsString} // Tooltip for full URL
+                          title={nft.ipfsString}
                         >
                           {nft.ipfsString.slice(0, 6)}...{nft.ipfsString.slice(-6)}
-                          {/* Tooltip for full URL */}
-                          <div className="absolute left-0 top-full mt-1 hidden group-hover:block bg-gray-800 text-white text-xs p-2 rounded shadow-lg z-10">
-                            {nft.ipfsString}
-                          </div>
                         </div>
                       </div>
                     </div>
-                    {/* Start Auction Button */}
                   </div>
                   <Link
                     href={{
                       pathname: "/auction",
                       query: {
-                        collection: params.address,
+                        collection: collection,
                         tokenId: nft.tokenId.toString(),
                       },
                     }}
